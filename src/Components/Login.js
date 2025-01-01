@@ -34,7 +34,7 @@ const Login = () => {
       createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
-
+  
           sendEmailVerification(user)
             .then(() => {
               setSuccessMessage("Verification email sent! Please check your inbox.");
