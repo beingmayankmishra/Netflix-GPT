@@ -5,6 +5,7 @@ import checkValidData from "../utils/validate";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendEmailVerification,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
 
@@ -17,56 +18,72 @@ const Login = () => {
   const fullName = useRef(null);
 
   const handleButtonClick = () => {
-    // Validate data before proceeding
     const message = checkValidData(email.current.value, password.current.value);
-    seterrormessage(null); // Clear previous error message
-    setSuccessMessage(null); // Clear previous success message
+    seterrormessage(null);
+    setSuccessMessage(null);
 
     if (message) {
-      seterrormessage(message); // Set error message if validation fails
-      return; // Stop further processing if validation fails
+      seterrormessage(message);
+      return;
     }
 
     if (!isSignInForm) {
-      // sign up logic
+      // Sign up logic
       createUserWithEmailAndPassword(auth, email.current.value, password.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
-          setSuccessMessage("Your account has been created successfully!");
+
+          // Send email verification
+          sendEmailVerification(user)
+            .then(() => {
+              setSuccessMessage("Verification email sent! Please check your inbox.");
+            })
+            .catch(() => {
+              seterrormessage("Failed to send verification email. Please try again.");
+            });
+
           fullName.current.value = "";
           email.current.value = "";
           password.current.value = "";
         })
         .catch((error) => {
           const errorMessage = error.message;
-          seterrormessage(`Oops! Something went wrong. ${errorMessage.split(":")[1] || "Please try again."}`);
+          seterrormessage(
+            `Oops! Something went wrong. ${errorMessage.split(":")[1] || "Please try again."}`
+          );
         });
     } else {
-      // sign in logic
+      // Sign in logic
       signInWithEmailAndPassword(auth, email.current.value, password.current.value)
         .then((userCredential) => {
           const user = userCredential.user;
+          if (!user.emailVerified) {
+            seterrormessage("Please verify your email before signing in.");
+            return;
+          }
+          setSuccessMessage("Sign-in successful!");
         })
         .catch((error) => {
           const errorMessage = error.message;
-          seterrormessage(`Oops! Something went wrong. ${errorMessage.split(":")[1] || "Please try again."}`);
+          seterrormessage(
+            `Oops! Something went wrong. ${errorMessage.split(":")[1] || "Please try again."}`
+          );
         });
     }
   };
 
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
-    seterrormessage(null); // Clear error message when switching forms
-    setSuccessMessage(null); // Clear success message when switching forms
-    email.current.value = ""; // Clear email field when switching
-    password.current.value = ""; // Clear password field when switching
-    if (!isSignInForm) fullName.current.value = ""; // Clear full name field if switching to Sign In form
+    seterrormessage(null);
+    setSuccessMessage(null);
+    email.current.value = "";
+    password.current.value = "";
+    if (!isSignInForm) fullName.current.value = "";
   };
 
   return (
     <div className="relative h-screen">
       <Header />
-      {/* Background Banner */}
       <div className="absolute inset-0">
         <img
           src="/loginbanner.jpg"
@@ -75,7 +92,6 @@ const Login = () => {
         />
       </div>
 
-      {/* Login Form / signup */}
       <form
         onSubmit={(e) => e.preventDefault()}
         className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-80 py-10 px-8 rounded-md w-[400px] shadow-lg"
@@ -107,7 +123,6 @@ const Login = () => {
           className="p-4 mb-8 w-full text-white rounded-md outline-none bg-gray-800 focus:ring-2 hover:border-white border-transparent border-2 transition"
         />
 
-        {/* Error and Success Messages */}
         {errormessage && (
           <p className="text-red-400 text-lg mb-4 bg-red-900 p-3 rounded-md shadow-md">
             {errormessage}
