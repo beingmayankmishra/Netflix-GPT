@@ -9,7 +9,7 @@ const VideoTitle = ({ title, overview }) => {
       </h1>
 
       {/* Overview */}
-      <p className="py-6 text-lg w-1/4 transition-opacity duration-500">
+      <p className="py-6 text-lg w-1/4 transition-opacity duration-500 line-clamp-4">
         {overview}
       </p>
 
