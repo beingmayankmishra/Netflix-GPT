@@ -3,19 +3,47 @@ import MovieCards from "./MovieCards";
 
 const MovieList = ({ title, movies }) => {
   return (
-    <div className="px-2 ">
-      <h1 className="text-3xl py-4 text-white">{title}</h1>
-      <div className="flex overflow-x-scroll ">
-        <div className="flex">
+    <div className="px-6 py-8">
+      <h1 className="text-4xl py-6 text-white font-bold tracking-wider">{title}</h1>
+      <div className="relative group">
+        {/* Left Arrow */}
+        <button
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full opacity-70 hover:opacity-100 transition duration-300 z-10"
+          onClick={() => {
+            document.getElementById(`${title}-container`).scrollBy({ left: -400, behavior: 'smooth' });
+          }}
+        >
+          ◀
+        </button>
+
+        {/* Movies Container */}
+        <div
+          id={`${title}-container`}
+          className="flex space-x-4 overflow-hidden"
+        >
           {movies && movies.length > 0 ? (
-            // Corrected map function
             movies.map((movie) => (
-              <MovieCards key={movie.id} posterPath={movie.poster_path} />
+              <div
+                key={movie.id}
+                className="flex-none w-[200px] h-[300px] hover:scale-105 transition-transform duration-300"
+              >
+                <MovieCards posterPath={movie.poster_path} />
+              </div>
             ))
           ) : (
-            <p>No movies available</p>
+            <p className="text-gray-400">No movies available</p>
           )}
         </div>
+
+        {/* Right Arrow */}
+        <button
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white p-3 rounded-full opacity-70 hover:opacity-100 transition duration-300 z-10"
+          onClick={() => {
+            document.getElementById(`${title}-container`).scrollBy({ left: 400, behavior: 'smooth' });
+          }}
+        >
+          ▶
+        </button>
       </div>
     </div>
   );
