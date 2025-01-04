@@ -1,4 +1,7 @@
 const MovieCards = ({ posterPath }) => {
+
+  if(!posterPath) return null;
+  
   return (
     <div className="relative w-full h-full overflow-hidden rounded-lg">
       <img
