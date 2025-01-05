@@ -19,13 +19,13 @@ const MovieList = ({ title, movies }) => {
         {/* Movies Container */}
         <div
           id={`${title}-container`}
-          className="flex space-x-4 overflow-hidden"
+          className="flex items-center space-x-4 overflow-hidden sm:w-full lg:w-auto"
         >
           {movies && movies.length > 0 ? (
             movies.map((movie) => (
               <div
                 key={movie.id}
-                className="flex-none w-[200px] h-[300px] hover:scale-105 transition-transform duration-300"
+                className="flex-none w-[150px] sm:w-[200px] h-[300px] hover:scale-105 transition-transform duration-300"
               >
                 <MovieCards posterPath={movie.poster_path} />
               </div>

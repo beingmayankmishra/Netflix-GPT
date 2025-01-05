@@ -27,7 +27,7 @@ const GptSearchBar = () => {
     const gptQuery =
       "Act as a Movie Recommendation system and suggest some movies for the query : " +
       searchText.current.value +
-      ". only give me names of 5 movies, comma seperated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
+      ". only give me names of 5 movies, comma separated like the example result given ahead. Example Result: Gadar, Sholay, Don, Golmaal, Koi Mil Gaya";
 
     const gptResults = await openai.chat.completions.create({
       messages: [{ role: "user", content: gptQuery }],
@@ -57,17 +57,17 @@ const GptSearchBar = () => {
   return (
     <div className="pt-[12%] flex justify-center">
       <form
-        className="w-1/2 grid grid-cols-12 bg-black"
+        className="w-full sm:w-1/2 grid grid-cols-12 bg-black"
         onSubmit={(e) => e.preventDefault()}
       >
         <input
           ref={searchText}
           type="text"
-          className="p-4 m-4 col-span-9 "
+          className="p-4 m-4 col-span-12 sm:col-span-9"
           placeholder={lang[langkey].gptSearchPlaceholder}
         />
         <button
-          className="py-2 px-4 m-4 col-span-3 bg-red-700 rounded-lg text-white"
+          className="py-2 px-4 m-4 col-span-12 sm:col-span-3 bg-red-700 rounded-lg text-white"
           onClick={handleGptSearchClick}
         >
           {lang[langkey].search}
