@@ -1,18 +1,19 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/userSlice";
 import { toggleGptSearchView } from "../utils/gptSlice";
 import { SUPPORTED_LANGUAGE } from "../utils/constants";
-
 import { changeLanguage } from "../utils/configSlice";
+
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
   const showGptSearch = useSelector((store) => store.gpt.showGptSearch);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleSignOut = () => {
     signOut(auth)
@@ -30,9 +31,7 @@ const Header = () => {
       if (user) {
         if (user.emailVerified) {
           const { uid, email, displayName } = user;
-          dispatch(
-            addUser({ uid: uid, email: email, displayName: displayName })
-          );
+          dispatch(addUser({ uid, email, displayName }));
           navigate("/browse");
         } else {
           signOut(auth); // Automatically sign out unverified users
@@ -48,8 +47,6 @@ const Header = () => {
   }, []);
 
   const handleGptSearchClick = () => {
-    // toggle GPT search
-
     dispatch(toggleGptSearchView());
   };
 
@@ -58,13 +55,21 @@ const Header = () => {
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full px-4 py-2 bg-gradient-to-b from-black via-transparent z-10 flex justify-between">
-      <img className="w-48" src="/netflixlogo.png" alt="Netflix Logo" />
+    <div className="absolute top-0 left-0 w-full px-4 sm:px-6 py-3 sm:py-4 bg-gradient-to-b from-black via-transparent to-transparent z-10 flex items-center justify-between">
+      {/* Logo */}
+      <img
+        className="w-24 sm:w-32 cursor-pointer"
+        src="/netflixlogo.png"
+        alt="Netflix Logo"
+        onClick={() => navigate("/browse")}
+      />
+
+      {/* Right Section */}
       {user && (
-        <div className="flex p-2">
+        <div className="flex items-center space-x-4 sm:space-x-6 relative">
           {showGptSearch && (
             <select
-              className="p-2 bg-gray-900 text-white m-2"
+              className="p-2 bg-gray-800 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-xs sm:text-sm"
               onChange={handleLanguageChange}
             >
               {SUPPORTED_LANGUAGE.map((lang) => (
@@ -74,17 +79,38 @@ const Header = () => {
               ))}
             </select>
           )}
-          ;
           <button
-            className="py-2 rounded-lg mx-4 my-2 px-4 bg-purple-800 text-white "
+            className="py-2 px-3 sm:px-4 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold text-xs sm:text-sm transition-all"
             onClick={handleGptSearchClick}
           >
-             {showGptSearch? "Home": "GPT Search"} 
+            {showGptSearch ? "Home" : "GPT Search"}
           </button>
-          <img className="w-12 h-12" alt="usericon" src="/userimg.png" />
-          <button onClick={handleSignOut} className="font-bold text-blue-950">
-            (Sign Out)
-          </button>
+
+          {/* User Profile and Dropdown */}
+          <div
+            className="relative flex items-center space-x-1 cursor-pointer"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+          >
+            {/* User Image */}
+            <div className="w-8 h-8 rounded-md overflow-hidden bg-red-600 flex items-center justify-center">
+              <img className="w-full h-full" alt="User Icon" src="/userimg.png" />
+            </div>
+
+            {/* Dropdown Icon */}
+            <span className="text-white text-xs sm:text-sm">▼</span>
+          </div>
+
+          {/* Dropdown Menu */}
+          {dropdownOpen && (
+            <div className="absolute top-12 right-0 bg-gray-800 text-white rounded-md shadow-lg py-2 w-36 sm:w-40">
+              <button
+                onClick={handleSignOut}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-700 text-sm sm:text-base"
+              >
+                Sign Out
+              </button>
+            </div>
+          )}
         </div>
       )}
     </div>
