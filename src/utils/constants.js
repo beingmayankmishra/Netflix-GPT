@@ -3,7 +3,7 @@ export const API_OPTIONS =  {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOTUxZGFhMmE0MmY5NjgyNDE1NzNhYzhlMmE4NWI3NSIsIm5iZiI6MTczNTgxNTU1Ny43ODU5OTk4LCJzdWIiOiI2Nzc2NzE4NTA5YjgwZjliYjMxMmEyMjgiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.JCLZNKvqVbYeRwhT8WSnI-0BHo5NbHkHt4tQqtYF3nM'
+      Authorization: 'Bearer '+ process.env.REACT_APP_TMDB_KEY,
     }
   };
 
@@ -12,5 +12,9 @@ export const API_OPTIONS =  {
   export const SUPPORTED_LANGUAGE = [{identifier:"en", name:"English"},
     {identifier:"hindi", name:"Hindi"},
     {identifier:"spanish", name:"Spanish"}, ];
+
+
+   export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;
+
     
   

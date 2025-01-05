@@ -30,6 +30,7 @@ const Browse = () => {
         <>
         <MainContainer/>
         <SecondaryContainer/>
+        
         </>
       )
     }
